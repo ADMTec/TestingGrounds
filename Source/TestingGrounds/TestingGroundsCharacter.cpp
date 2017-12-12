@@ -112,19 +112,17 @@ void ATestingGroundsCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	// set up gameplay key bindings
 	check(PlayerInputComponent);
 
-	// Bind jump events
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
-	// Bind fire event
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ATestingGroundsCharacter::OnFire);
-
-	// Enable touchscreen input
-	EnableTouchscreenMovement(PlayerInputComponent);
+	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &ATestingGroundsCharacter::TouchStarted);
+	if (EnableTouchscreenMovement(PlayerInputComponent) == false)
+	{
+		PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ATestingGroundsCharacter::OnFire);
+	}
 
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ATestingGroundsCharacter::OnResetVR);
 
-	// Bind movement events
 	PlayerInputComponent->BindAxis("MoveForward", this, &ATestingGroundsCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ATestingGroundsCharacter::MoveRight);
 
@@ -285,15 +283,15 @@ void ATestingGroundsCharacter::LookUpAtRate(float Rate)
 
 bool ATestingGroundsCharacter::EnableTouchscreenMovement(class UInputComponent* PlayerInputComponent)
 {
-	if (FPlatformMisc::SupportsTouchInput() || GetDefault<UInputSettings>()->bUseMouseForTouch)
+	bool bResult = false;
+	if (FPlatformMisc::GetUseVirtualJoysticks() || GetDefault<UInputSettings>()->bUseMouseForTouch)
 	{
+		bResult = true;
 		PlayerInputComponent->BindTouch(EInputEvent::IE_Pressed, this, &ATestingGroundsCharacter::BeginTouch);
 		PlayerInputComponent->BindTouch(EInputEvent::IE_Released, this, &ATestingGroundsCharacter::EndTouch);
 
 		//Commenting this out to be more consistent with FPS BP template.
 		//PlayerInputComponent->BindTouch(EInputEvent::IE_Repeat, this, &ATestingGroundsCharacter::TouchUpdate);
-		return true;
 	}
-	
-	return false;
+	return bResult;
 }

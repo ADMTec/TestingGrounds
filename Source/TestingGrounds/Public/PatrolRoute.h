@@ -11,7 +11,7 @@
 */
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class TESTINGGROUNDS_API UPatrolRoute : public UActorComponent
 {
 	GENERATED_BODY()
@@ -21,6 +21,6 @@ public:
 
 private:
 	UPROPERTY(EditInstanceOnly, Category = "Patrol Route")
-	TArray<AActor*> PatrolPoints;
-	
+		TArray<AActor*> PatrolPoints;
+
 };
